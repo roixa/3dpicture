@@ -3,6 +3,8 @@ package com.tomsksummer.roix.picture3d;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
+
 /**
  * Created by bsr on 07.09.14.
  */
@@ -17,23 +19,47 @@ public class PreferenceHelper {
     /////pictureRenderer
     private static final int currentPictureId=R.drawable.bustygs;//from res
     ////pictureModel
-    private static final int dimension=42;//max edge num of polygons in 3d view
+    private static final int dimension=45;//max edge num of polygons in 3d view
     public  static final float surfaceSize=4f;//size in gl coordinates
     public static final float scaleFactor=8f;//scale bitmap for correct load in gl
-    public static final float fingerSize=0.05f;//det relative draw area when touched
+    public static final float fingerSize=0.03f;//det relative draw area when touched
     private static final float shift=0.2f;//relative size of max shift
     public static final int savedSteps=10;
+    public static  ArrayList<Integer> picturesResId;
+
     ///////////////////
     private static final String PREFS_NAME="picture3dprefs";
     private static final String KEY_PICTURE_ID="key_picture_id";
     private static final String KEY_SHIFT="key_shift";
     private static final String KEY_DIMENSION="key_dimension";
 
+
     private static Context context;
 
+    public static void init( Context c){
+        setContext(c);
+        fillPicturesResId();
+    }
 
-    public static void setContext(Context c){
+
+    private static void setContext(Context c){
         context=c;
+    }
+
+    private static void fillPicturesResId(){
+        picturesResId=new ArrayList<Integer>();
+        picturesResId.add(R.drawable.bustygs);
+        picturesResId.add(R.drawable.nature);
+        picturesResId.add(R.drawable.verticalbridge);
+        picturesResId.add(R.drawable.man);
+        picturesResId.add(R.drawable.room);
+
+
+
+    }
+
+    public static ArrayList<Integer> getPicturesResId(){
+        return picturesResId;
     }
 
     public static int getCurrentPictureResId(){

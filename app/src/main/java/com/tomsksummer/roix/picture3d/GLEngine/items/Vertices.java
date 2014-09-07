@@ -108,6 +108,14 @@ public class Vertices extends Object {
 
     }
 
+    public boolean crossedWithCircle(float x,float y,float finger){
+
+        boolean crossed=distanceTo(x,y)<=finger;
+
+
+        return crossed;
+    }
+
 
     public FloatBuffer en(){//encode for loading in gl
         return encoded;
@@ -116,7 +124,9 @@ public class Vertices extends Object {
 
 
     //distance of touching point to  vertices
+
     public float distanceTo(float x,float y){
+
 
             float dist;
             dist = module(lbx - x, lby - y);
@@ -129,7 +139,33 @@ public class Vertices extends Object {
             return dist;
 
     }
+    /*
+    public float distanceTo(float x,float y){
+        float s=rbx-lbx;
+        s=s/2.0f;
 
+        float dist;
+
+        dist = module(lbx - x, lby - y);
+        float tem=module(ltx-x,lty-y);
+        dist=dist<tem?dist:tem;
+        tem=module(rbx-x,rby-y);
+        dist=dist<tem?dist:tem;
+        tem=module(rtx-x,rty-y);
+        dist=dist<tem?dist:tem;
+        if(dist==0)return 0;
+
+        boolean nearX=lbx==x||rbx==x||rtx==x||ltx==x;
+        boolean nearY=lby==y||lty==y||rby==y||rty==y;
+        boolean nearRT=rtx==x&&rty==y;
+        boolean nearRB=rbx==x&&rby==y;
+        boolean nearLT=ltx==x&&lty==y;
+        boolean nearLB=lbx==x&&lby==y;
+        dist = module(lbx+s - x, lby+s - y);
+        if (nearRB||nearRT||nearLB||nearLT) dist=0;
+        return dist;
+    }
+    */
     private void encode(){
         float [] vertices={ // Vertices for a face
                 lbx, lby, lbz,  // 0. left-bottom-front

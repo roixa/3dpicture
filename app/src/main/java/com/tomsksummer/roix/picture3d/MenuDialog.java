@@ -1,5 +1,6 @@
 package com.tomsksummer.roix.picture3d;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -42,6 +43,13 @@ public class MenuDialog extends DialogFragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.loadPhotoButton:
+                Intent intent=new Intent(getActivity(),LoadPictureActivity.class);
+
+                startActivity(intent);
+
+        }
 
     }
 }

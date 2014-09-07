@@ -63,10 +63,15 @@ public class PictureModel {
 
         x=x-finger/2f;
         y=y-finger/2f;
+        /*
         Vertices fingerArea=new Vertices(x,y,finger);
         Log.d(TAG,String.valueOf(x));
         for (Vertices v:polygons){
             if(v.crossedWith(fingerArea)) v.setTouch(true);
+        }
+        */
+        for (Vertices v:polygons){
+            if(v.crossedWithCircle(x,y,finger)) v.setTouch(true);
         }
     }
 
@@ -117,7 +122,7 @@ public class PictureModel {
         for (Vertices v:polygons){
             if(v.isTouched()) {
                 float a=shift/2f;
-                float b=4f/finger;
+                float b=2.3f/finger;
                 float lt=(float)Math.pow(distanceToUntouchedArea(v.ltx,v.lty)*b,0.5)*a;
                 float lb=(float)Math.pow(distanceToUntouchedArea(v.lbx,v.lby)*b,0.5)*a;
                 float rb=(float)Math.pow(distanceToUntouchedArea(v.rbx,v.rby)*b,0.5)*a;

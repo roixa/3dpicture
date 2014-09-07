@@ -15,9 +15,7 @@
         <activity
             android:name=".PictureActivity"
             android:label="@string/title_activity_picture"
-            android:screenOrientation="portrait"
-
-            >
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,6 +29,10 @@
         <activity
             android:name=".MenuActivity"
             android:label="@string/title_activity_menu" >
+        </activity>
+        <activity
+            android:name=".LoadPictureActivity"
+            android:label="@string/title_activity_load_picture" >
         </activity>
     </application>
 

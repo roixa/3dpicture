@@ -13,5 +13,6 @@
     <string name="set_wallpaper">Set to Wallpaper</string>
     <string name="load_photo">Load photo</string>
     <string name="settings">Settings</string>
+    <string name="title_activity_load_picture">LoadPictureActivity</string>
 
 </resources>

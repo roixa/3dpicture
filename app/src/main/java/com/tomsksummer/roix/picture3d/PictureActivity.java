@@ -6,6 +6,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
@@ -13,32 +15,38 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.tomsksummer.roix.picture3d.GLEngine.PictureSurfaceView;
 import com.tomsksummer.roix.picture3d.GLEngine.mSurfaceView;
 import com.tomsksummer.roix.picture3d.R;
 
-public class PictureActivity extends Activity {
+public class PictureActivity extends FragmentActivity {
 
     private PictureSurfaceView mGLSurfaceView;
     private SensorManager sensorManager;
     private Sensor sensorAccel;//accelerator sensor
+    private Button menuButton;
     private ImageButton handButton;
     private ImageButton bendButton;
-    private ImageButton undoButton;
+    private Button undoButton;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        PreferenceHelper.setContext(getApplicationContext());
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         sensorAccel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         setContentView(R.layout.activity_picture);
         mGLSurfaceView = ( PictureSurfaceView)findViewById(R.id.surfaceView);
+        menuButton=(Button) findViewById(R.id.menubutton);
         handButton=(ImageButton)findViewById(R.id.handButton);
         bendButton=(ImageButton)findViewById(R.id.bendButton);
-        undoButton=(ImageButton)findViewById(R.id.undoButton);
+        undoButton=(Button)findViewById(R.id.undoButton);
 
         View.OnClickListener buttonsListener = new View.OnClickListener() {
             @Override
@@ -54,14 +62,19 @@ public class PictureActivity extends Activity {
                     case R.id.undoButton:
                         mGLSurfaceView.buttonPushedBack();
                         break;
+                    case R.id.menubutton:
+                        showMenuDialog();
+                        break;
                 }
 
             }
         };
-
+        menuButton.setOnClickListener(buttonsListener);
         handButton.setOnClickListener(buttonsListener);
         bendButton.setOnClickListener(buttonsListener);
         undoButton.setOnClickListener(buttonsListener);
+
+
 
     }
 
@@ -88,9 +101,17 @@ public class PictureActivity extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event){
-
+        //mGLSurfaceView.requestRender();
         // Be sure to call the superclass implementation
         return super.onTouchEvent(event);
+    }
+
+
+    private void showMenuDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        MenuDialog dialog = new MenuDialog();
+
+        dialog.show(fm, "fragment_edit_name");
     }
 
 

@@ -7,6 +7,7 @@ import android.opengl.GLUtils;
 
 import com.tomsksummer.roix.picture3d.GLEngine.items.PictureModel;
 import com.tomsksummer.roix.picture3d.GLEngine.items.Vertices;
+import com.tomsksummer.roix.picture3d.PreferenceHelper;
 
 
 import java.nio.ByteBuffer;
@@ -48,7 +49,7 @@ public class PictureSurface {
         //model=new PictureModel();
         this.context=context;
         Bitmap picture= BitmapFactory.decodeResource(context.getResources(), pictureId);
-        model =new PictureModel(picture,42);
+        model =new PictureModel(picture, PreferenceHelper.getDimension());
         textureIDs=new int[model.getTextures().size()];
     }
 
@@ -61,6 +62,8 @@ public class PictureSurface {
             gl.glBindTexture(GL10.GL_TEXTURE_2D, textureIDs[i]);
             gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
             gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+            gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
+            gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
             // Build Texture from loaded bitmap for the currently-bind texture ID
             GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, shapes.get(i), 0);
 
@@ -87,6 +90,8 @@ public class PictureSurface {
         // Set up texture filters
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,GL10. GL_CLAMP_TO_EDGE);
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
 
         // Construct an input stream to texture image "res\drawable\nehe.png"
         //InputStream istream = context.getResources().openRawResource(t5snowtex01);

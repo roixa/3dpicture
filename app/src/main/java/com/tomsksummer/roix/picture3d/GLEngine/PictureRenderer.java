@@ -6,6 +6,7 @@ import android.opengl.GLU;
 import android.util.Log;
 
 import com.tomsksummer.roix.picture3d.GLEngine.models3d.PictureSurface;
+import com.tomsksummer.roix.picture3d.PreferenceHelper;
 import com.tomsksummer.roix.picture3d.R;
 import com.tomsksummer.roix.picture3d.interfaces.TouchSurfaceListener;
 
@@ -31,7 +32,7 @@ public class PictureRenderer implements GLSurfaceView.Renderer, TouchSurfaceList
         base=new AccelModule();
         this.context = context;
         //cube=new Cube();
-        pictureSurface=new PictureSurface(this.context, R.drawable.nature);
+        pictureSurface=new PictureSurface(this.context, PreferenceHelper.getCurrentPictureResId());
         touched=false;
         coord=new CoordHelper(0,0,6);
         modeIsDraw=true;
@@ -88,7 +89,7 @@ public class PictureRenderer implements GLSurfaceView.Renderer, TouchSurfaceList
         if(!touched||!modeIsDraw){
         gl.glRotatef(base.getXAngle(), 1.0f, 0.0f, 0.0f); // Rotate accel x
         gl.glRotatef(base.getYAngle(), 0.0f, 1.0f, 0.0f); // Rotate accel y
-        gl.glRotatef(base.getZAngle(), 0.0f, 0.0f, 1.0f); // Rotate accel y
+        //gl.glRotatef(base.getZAngle(), 0.0f, 0.0f, 1.0f); // Rotate accel y
         //
         }
         else  base.returnSurfaceAngle();

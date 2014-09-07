@@ -25,8 +25,8 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/linearLayout">
+        android:layout_above="@+id/linearLayout"
+        android:layout_alignParentTop="true">
     </com.tomsksummer.roix.picture3d.GLEngine.PictureSurfaceView>
 
     <LinearLayout
@@ -38,48 +38,59 @@
         android:layout_alignEnd="@+id/surfaceView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/linearLayout">
+        android:id="@+id/linearLayout"
+        android:weightSum="1">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/_image_button_size"
-            android:text="menu"
-            android:id="@+id/menubutton"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <ImageButton
-            android:layout_width="@dimen/_image_button_size"
-            android:layout_height="@dimen/_image_button_size"
+            <ImageButton
+                android:layout_width="@dimen/_image_button_size"
+                android:layout_height="@dimen/_image_button_size"
+                android:id="@+id/bendButton"
+                android:layout_below="@+id/surfaceView"
+                android:layout_toRightOf="@+id/handButton"
+                android:layout_toEndOf="@+id/handButton"
+                android:src="@drawable/bendbutton"
+                android:scaleType="fitStart" />
 
-            android:id="@+id/handButton"
-            android:layout_below="@+id/surfaceView"
-            android:layout_toEndOf="@+id/menubutton"
-            android:src="@drawable/hand"
-            android:layout_alignParentBottom="true"
-            android:scaleType="fitStart"
-            android:layout_toRightOf="@+id/menubutton" />
+            <ImageButton
+                android:layout_width="@dimen/_image_button_size"
+                android:layout_height="@dimen/_image_button_size"
 
-        <ImageButton
-            android:layout_width="@dimen/_image_button_size"
-            android:layout_height="@dimen/_image_button_size"
-            android:id="@+id/bendButton"
-            android:layout_below="@+id/surfaceView"
-            android:layout_toRightOf="@+id/handButton"
-            android:layout_toEndOf="@+id/handButton"
-            android:src="@drawable/bend"
-            android:scaleType="fitStart" />
+                android:id="@+id/handButton"
+                android:layout_below="@+id/surfaceView"
+                android:layout_toEndOf="@+id/menubutton"
+                android:src="@drawable/hand"
+                android:layout_alignParentBottom="true"
+                android:scaleType="fitStart"
+                android:layout_toRightOf="@+id/menubutton" />
 
-        <ImageButton
-            android:layout_width="@dimen/_image_button_size"
-            android:layout_height="@dimen/_image_button_size"
-            android:id="@+id/undoButton"
-            android:layout_below="@+id/surfaceView"
-            android:layout_toRightOf="@+id/bendButton"
-            android:layout_toEndOf="@+id/bendButton"
-            android:src="@drawable/undo"
-            android:scaleType="fitStart" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_image_button_size"
+                android:id="@+id/undoButton"
+                android:layout_below="@+id/surfaceView"
+                android:layout_toRightOf="@+id/bendButton"
+                android:layout_toEndOf="@+id/bendButton"
+                android:src="@drawable/undo"
+                android:scaleType="fitStart"
+                android:layout_weight="0.06"
+                android:text="@string/back" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_image_button_size"
+                android:text="@string/menu"
+                android:id="@+id/menubutton"
+                android:layout_weight="0.06"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

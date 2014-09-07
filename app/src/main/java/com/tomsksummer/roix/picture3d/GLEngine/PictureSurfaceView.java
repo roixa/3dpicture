@@ -73,7 +73,7 @@ public class PictureSurfaceView extends GLSurfaceView {
         SGD.onTouchEvent(e);
         myG.onTouchEvent(e);
         TouchSurfaceListener touchListener=renderer;
-
+        requestRender();
         float x = e.getX();
         float y = e.getY();
 

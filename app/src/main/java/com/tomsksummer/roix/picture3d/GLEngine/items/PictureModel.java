@@ -3,6 +3,8 @@ package com.tomsksummer.roix.picture3d.GLEngine.items;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.tomsksummer.roix.picture3d.PreferenceHelper;
+
 import java.util.ArrayList;
 
 /**
@@ -11,10 +13,6 @@ import java.util.ArrayList;
 public class PictureModel {
 
     public final  String TAG="PictureModel";
-    public  static final float surfaceSize=4f;//size in gl coordinates
-    private static final float scaleFactor=8f;
-    private static final float fingerSize=0.05f;
-    private static final float shift=0.2f;
 
 
     private int width;//of base bitmap
@@ -28,6 +26,7 @@ public class PictureModel {
     private ArrayList<Bitmap> textures;
     private ArrayList<Vertices> polygons;//size not more dimension ^2
     private ArrayList<Vertices> previousPolygons;
+    private ArrayList <ArrayList<Vertices> > previousSteps;
 
     /**
      * all scene range is [-surfaceSize/2 ;surfaceSize/2]
@@ -40,6 +39,7 @@ public class PictureModel {
         this.dimension=dimension;
         bitmap=scaleBitmap(bitmap);
         previousPolygons=new ArrayList<Vertices>();
+        previousSteps=new ArrayList<ArrayList<Vertices>>();
         width=bitmap.getWidth();
         height=bitmap.getHeight();
         textures=new ArrayList<Bitmap>();
@@ -59,7 +59,7 @@ public class PictureModel {
     }
 
     public void touch(float x,float y,float z){//z is camz
-        finger=fingerSize*z;
+        finger= PreferenceHelper.fingerSize*z;
 
         x=x-finger/2f;
         y=y-finger/2f;
@@ -72,12 +72,19 @@ public class PictureModel {
 
     public void untouch(){
         previousPolygons=copy(polygons);
-        bendSurface(this.shift);
+        previousSteps.add(previousPolygons);
+        bendSurface(PreferenceHelper.getShift());
         disableTouchPolygons();
     }
 
     public void returnSurfaceState(){
-        polygons=copy(previousPolygons);
+        ArrayList <Vertices> vert=new ArrayList<Vertices>();
+        if(previousSteps.size()==0) return;
+        vert=previousSteps.get(previousSteps.size()-1);
+
+        previousSteps.remove(vert);
+
+        polygons=copy(vert);
 
     }
 
@@ -101,7 +108,7 @@ public class PictureModel {
         int w=bitmap.getWidth();
         int h=bitmap.getHeight();
         float largest=h>w?h:w;
-        float scale=scaleFactor*(float)dimension/largest;
+        float scale=PreferenceHelper.scaleFactor*(float)dimension/largest;
 
         return Bitmap.createScaledBitmap(bitmap,(int)(scale*w),(int)(scale*h),true);
     }
@@ -141,10 +148,10 @@ public class PictureModel {
         cellSize=largest/dimension;
 
 
-        float xPos=-surfaceSize/2;//position in normal coordinates [-1,1]
-        float yPos=-surfaceSize/2;
-        float step=surfaceSize/(float)dimension;
-        scale=largest/surfaceSize;
+        float xPos=-PreferenceHelper.surfaceSize/2;//position in normal coordinates [-1,1]
+        float yPos=-PreferenceHelper.surfaceSize/2;
+        float step=PreferenceHelper.surfaceSize/(float)dimension;
+        scale=largest/PreferenceHelper.surfaceSize;
 
 
 
@@ -166,12 +173,12 @@ public class PictureModel {
              * */
             xPos+=step;
 
-            boolean inTheEndX=(xPos>=surfaceSize/2)||(((xPos+surfaceSize/2)*scale)>=width);//!!! *2
+            boolean inTheEndX=(xPos>=PreferenceHelper.surfaceSize/2)||(((xPos+PreferenceHelper.surfaceSize/2)*scale)>=width);//!!! *2
             if(inTheEndX){
-                xPos=-surfaceSize/2;
+                xPos=-PreferenceHelper.surfaceSize/2;
                 yPos+=step;
             }
-            boolean inTheEndY=(yPos>=surfaceSize/2)||(((yPos+surfaceSize/2)*scale)>=height);
+            boolean inTheEndY=(yPos>=PreferenceHelper.surfaceSize/2)||(((yPos+PreferenceHelper.surfaceSize/2)*scale)>=height);
             generateDone=(inTheEndX&&inTheEndY);
 
                 if(generateDone&&width>height){yBiass=yPos;}//to remove bug
@@ -182,11 +189,11 @@ public class PictureModel {
 
     private void generateTextures(Bitmap bitmap){
 
-        float step=surfaceSize/(float)dimension;
+        float step=PreferenceHelper.surfaceSize/(float)dimension;
         float cs=step*scale;
         for(Vertices vertices:polygons){
-            int xpos=(int)((vertices.lbx+surfaceSize/2)*scale);
-            int ypos=(int)((-vertices.lby+surfaceSize/2-yBiass)*scale);
+            int xpos=(int)((vertices.lbx+PreferenceHelper.surfaceSize/2)*scale);
+            int ypos=(int)((-vertices.lby+PreferenceHelper.surfaceSize/2-yBiass)*scale);
             ypos=(ypos+(int)cs)>height?(height-(int)cs):ypos;
             xpos=(xpos+(int)cs)>width?(width-(int)cs):xpos;
             ypos=ypos<0?0:ypos;

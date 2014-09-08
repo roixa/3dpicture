@@ -5,6 +5,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.util.Log;
 
+import com.tomsksummer.roix.picture3d.GLEngine.items.Point;
 import com.tomsksummer.roix.picture3d.GLEngine.models3d.PictureSurface;
 import com.tomsksummer.roix.picture3d.PreferenceHelper;
 import com.tomsksummer.roix.picture3d.R;
@@ -34,7 +35,8 @@ public class PictureRenderer implements GLSurfaceView.Renderer, TouchSurfaceList
         //cube=new Cube();
         pictureSurface=new PictureSurface(this.context, PreferenceHelper.getCurrentPictureResId());
         touched=false;
-        coord=new CoordHelper(0,0,6);
+        int c=(int)PreferenceHelper.surfaceSize/2;
+        coord=new CoordHelper(c,-c,6);
         modeIsDraw=true;
     }
 
@@ -84,15 +86,20 @@ public class PictureRenderer implements GLSurfaceView.Renderer, TouchSurfaceList
 
 
         gl.glLoadIdentity();                  // Reset the current model-view matrix
-        gl.glTranslatef(-coord.camX, -coord.camY, -coord.camZ);   // Translate into the screen
+        float c=PreferenceHelper.surfaceSize/2;
+
+        gl.glTranslatef(-coord.camX+c, -coord.camY-c, -coord.camZ);   // Translate into the screen
 
         if(!touched||!modeIsDraw){
-        gl.glRotatef(base.getXAngle(), 1.0f, 0.0f, 0.0f); // Rotate accel x
-        gl.glRotatef(base.getYAngle(), 0.0f, 1.0f, 0.0f); // Rotate accel y
+
+        Point xa= Point.normal(coord.camX,0,0);
+        gl.glRotatef(base.getXAngle(), 1,0, 0.0f); // Rotate accel x
+        gl.glRotatef(base.getYAngle(), 0,1, 0.0f); // Rotate accel y
         //gl.glRotatef(base.getZAngle(), 0.0f, 0.0f, 1.0f); // Rotate accel y
         //
         }
         else  base.returnSurfaceAngle();
+        gl.glTranslatef(-c,c,0);   // Translate into the screen
 
         pictureSurface.draw(gl);
 

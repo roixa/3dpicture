@@ -44,13 +44,23 @@ public class MenuDialog extends DialogFragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
+        Intent intent;
         switch (v.getId()){
             case R.id.loadPhotoButton:
                 FragmentActivity a=getActivity();
-                Intent intent=new Intent(a,LoadPictureActivity.class);
-
+                intent=new Intent(a,LoadPictureActivity.class);
                 startActivity(intent);
                 a.finish();
+
+            case  R.id.settingsButton:
+                FragmentActivity ac=getActivity();
+                intent=new Intent(ac,SettingActivity.class);
+                startActivity(intent);
+                ac.finish();
+                break;
+
+
+
 
         }
 

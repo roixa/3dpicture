@@ -34,6 +34,10 @@
             android:name=".LoadPictureActivity"
             android:label="@string/title_activity_load_picture" >
         </activity>
+        <activity
+            android:name=".SettingActivity"
+            android:label="@string/title_activity_setting" >
+        </activity>
     </application>
 
 </manifest>

@@ -93,4 +93,15 @@
 
     </LinearLayout>
 
+    <SeekBar
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_image_button_size"
+        android:id="@+id/seekBar"
+        android:layout_above="@+id/linearLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:max="100" />
+
 </RelativeLayout>

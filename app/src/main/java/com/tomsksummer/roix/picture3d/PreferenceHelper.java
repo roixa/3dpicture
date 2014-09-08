@@ -11,6 +11,8 @@ import java.util.ArrayList;
 public class PreferenceHelper {
     //private params may changed from ui
 
+    public static final boolean isDemo=true;
+
     //////accelModule
     public static final float  sensetivity=70f;
     public static final int weight=6;// time of average sensor data
@@ -19,7 +21,7 @@ public class PreferenceHelper {
     /////pictureRenderer
     private static final int currentPictureId=R.drawable.bustygs;//from res
     ////pictureModel
-    private static final int dimension=45;//max edge num of polygons in 3d view
+    private static final int dimension=37;//max edge num of polygons in 3d view
     public  static final float surfaceSize=4f;//size in gl coordinates
     public static final float scaleFactor=8f;//scale bitmap for correct load in gl
     public static final float fingerSize=0.03f;//det relative draw area when touched
@@ -32,7 +34,13 @@ public class PreferenceHelper {
     private static final String KEY_PICTURE_ID="key_picture_id";
     private static final String KEY_SHIFT="key_shift";
     private static final String KEY_DIMENSION="key_dimension";
+    private static final String KEY_MODE="mode";
 
+
+    public static final int MODE_RECTANGLE=1;
+    public static final int MODE_SQUARE=2;
+
+    private static final int currentMode=MODE_SQUARE;
 
     private static Context context;
 
@@ -73,13 +81,34 @@ public class PreferenceHelper {
     }
 
     public static float getShift(){
-        return shift;
+        float ret=getFloatFromPrefs(KEY_SHIFT,0);
+        if (ret==0) ret=shift;
+        return ret;
+    }
+
+    public static void saveShift(float s){
+        setFloatInPrefs(KEY_SHIFT,s);
     }
 
     public static int getDimension(){
-        return dimension;
+        int ret=getIntFromPrefs(KEY_DIMENSION,0);
+        if (ret==0) ret=dimension;
+        return ret;
     }
 
+    public static void saveDimension(int dim){
+        setIntInPrefs(KEY_DIMENSION,dim);
+    }
+
+    public static void saveMode(int mode){
+        setIntInPrefs(KEY_MODE,mode);
+    }
+
+    public static int getMode(){
+        int ret=getIntFromPrefs(KEY_MODE,0);
+        if (ret==0) ret=currentMode;
+        return ret;
+    }
 
 
 

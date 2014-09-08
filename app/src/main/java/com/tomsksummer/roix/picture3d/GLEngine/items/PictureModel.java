@@ -22,6 +22,14 @@ public class PictureModel {
     private float scale;//connect normal metric and pixels (or float)
     private float finger;//determ finger paint size
     private float yBiass;//to remove bug in horizontal photos
+    /// second version
+
+    private float scaleX;
+    private float scaleY;
+    private float cellSizeX;
+    private float cellSizeY;
+    float surfaceSizeX;
+    float surfaceSizeY;
 
     private ArrayList<Bitmap> textures;
     private ArrayList<Vertices> polygons;//size not more dimension ^2
@@ -127,10 +135,18 @@ public class PictureModel {
                 float lb=(float)Math.pow(distanceToUntouchedArea(v.lbx,v.lby)*b,0.5)*a;
                 float rb=(float)Math.pow(distanceToUntouchedArea(v.rbx,v.rby)*b,0.5)*a;
                 float rt=(float)Math.pow(distanceToUntouchedArea(v.rtx,v.rty)*b,0.5)*a;
-                lt=lt>shift?shift:lt;
-                lb=lb>shift?shift:lb;
-                rb=rb>shift?shift:rb;
-                rt=rt>shift?shift:rt;
+                if(shift>0){
+                    lt=lt>shift?shift:lt;
+                    lb=lb>shift?shift:lb;
+                    rb=rb>shift?shift:rb;
+                    rt=rt>shift?shift:rt;
+                }
+                else{
+                    lt=lt<shift?shift:lt;
+                    lb=lb<shift?shift:lb;
+                    rb=rb<shift?shift:rb;
+                    rt=rt<shift?shift:rt;
+                }
                 v.shift(lb,rb,lt,rt);
             }
         }
@@ -148,26 +164,23 @@ public class PictureModel {
     }
 
     private void generatePolygons(){
+        ////all in normal coordinates
 
-        int largest=width>height?width:height;
-        cellSize=largest/dimension;
-
-
-        float xPos=-PreferenceHelper.surfaceSize/2;//position in normal coordinates [-1,1]
-        float yPos=-PreferenceHelper.surfaceSize/2;
-        float step=PreferenceHelper.surfaceSize/(float)dimension;
-        scale=largest/PreferenceHelper.surfaceSize;
-
-
-
+        surfaceSizeY=width>height?PreferenceHelper.surfaceSize:(PreferenceHelper.surfaceSize*(float)height/(float)width);
+        surfaceSizeX=width<height?PreferenceHelper.surfaceSize:(PreferenceHelper.surfaceSize*(float)width/(float)height);
+        float xPos=0;
+        float yPos=0;
+        float stepX=surfaceSizeX/(float)dimension;
+        float stepY=surfaceSizeY/(float)dimension;
         boolean generateDone=false;
 
         while (!generateDone){
+
             Vertices vertices = new Vertices( // Vertices for a face
-                     xPos,         yPos,       0.0f,  // 0. left-bottom-front
-                    (xPos+step),   yPos,       0.0f,  // 1. right-bottom-front
-                     xPos,        (yPos+step), 0.0f,  // 2. left-top-front
-                    (xPos+step),  (yPos+step), 0.0f   // 3. right-top-front
+                    xPos,         yPos,       0.0f,  // 0. left-bottom-front
+                    (xPos+stepX),   yPos,       0.0f,  // 1. right-bottom-front
+                    xPos,        (yPos+stepY), 0.0f,  // 2. left-top-front
+                    (xPos+stepX),  (yPos+stepY), 0.0f   // 3. right-top-front
             );
             polygons.add(vertices);
 
@@ -176,17 +189,15 @@ public class PictureModel {
             /**
              * @TODO "cutting image"
              * */
-            xPos+=step;
+            xPos+=stepX;
 
-            boolean inTheEndX=(xPos>=PreferenceHelper.surfaceSize/2)||(((xPos+PreferenceHelper.surfaceSize/2)*scale)>=width);//!!! *2
+            boolean inTheEndX=(xPos>=surfaceSizeX);//!!! *2
             if(inTheEndX){
-                xPos=-PreferenceHelper.surfaceSize/2;
-                yPos+=step;
+                xPos=0;
+                yPos-=stepY;
             }
-            boolean inTheEndY=(yPos>=PreferenceHelper.surfaceSize/2)||(((yPos+PreferenceHelper.surfaceSize/2)*scale)>=height);
+            boolean inTheEndY=(yPos<=-surfaceSizeY);
             generateDone=(inTheEndX&&inTheEndY);
-
-                if(generateDone&&width>height){yBiass=yPos;}//to remove bug
 
         }
 
@@ -194,43 +205,21 @@ public class PictureModel {
 
     private void generateTextures(Bitmap bitmap){
 
-        float step=PreferenceHelper.surfaceSize/(float)dimension;
-        float cs=step*scale;
+        float stepX=surfaceSizeX/(float)dimension;
+        float stepY=surfaceSizeY/(float)dimension;
+        scaleX=(float)width/surfaceSizeX;
+        scaleY=(float)height/surfaceSizeY;
+        cellSizeX=stepX*scaleX;
+        cellSizeY=stepY*scaleY;
+
         for(Vertices vertices:polygons){
-            int xpos=(int)((vertices.lbx+PreferenceHelper.surfaceSize/2)*scale);
-            int ypos=(int)((-vertices.lby+PreferenceHelper.surfaceSize/2-yBiass)*scale);
-            ypos=(ypos+(int)cs)>height?(height-(int)cs):ypos;
-            xpos=(xpos+(int)cs)>width?(width-(int)cs):xpos;
-            ypos=ypos<0?0:ypos;
-            xpos=xpos<0?0:xpos;
-
+            int xpos=(int)(vertices.lbx*scaleX);
+            int ypos=-(int)(vertices.lby*scaleY);
+            ypos=(ypos+(int)cellSizeY)>height?(height-(int)cellSizeY):ypos;
+            xpos=(xpos+(int)cellSizeX)>width?(width-(int)cellSizeX):xpos;
             Log.d("Picture model",String.valueOf(xpos)+"  "+String.valueOf(ypos)+"  size:"+String.valueOf(width));
-            //textures.add(Bitmap.createBitmap(bitmap,100,100,50,50));
-            textures.add(Bitmap.createBitmap(bitmap,xpos,ypos,cellSize,cellSize));
+            textures.add(Bitmap.createBitmap(bitmap,xpos,ypos,(int)cellSizeX,(int)cellSizeY));
         }
-
-
-        /**
-         * @TODO "inverted bitmap"
-         * @TODO "large bitmap not load"
-         * y axis is inverted now this looks up
-         *
-         * */
-
-         /*for(Vertices vertices:polygons){
-
-            int xpos=(int)((vertices.lbx+1f)*scale);
-
-            int ypos=(int)((-vertices.lby+1f)*scale);
-
-            ypos=(ypos+cellSize)>height?(height-cellSize):ypos;
-            xpos=(xpos+cellSize)>width?(width-cellSize):xpos;
-
-            Log.d("Picture model",String.valueOf(xpos)+"  "+String.valueOf(ypos)+"  size:"+String.valueOf(width));
-            //textures.add(Bitmap.createBitmap(bitmap,100,100,50,50));
-            textures.add(Bitmap.createBitmap(bitmap,xpos,ypos,cellSize,cellSize));
-        }*/
     }
-
 
 }

@@ -18,12 +18,13 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 
 import com.tomsksummer.roix.picture3d.GLEngine.PictureSurfaceView;
 import com.tomsksummer.roix.picture3d.GLEngine.mSurfaceView;
 import com.tomsksummer.roix.picture3d.R;
 
-public class PictureActivity extends FragmentActivity {
+public class PictureActivity extends FragmentActivity implements View.OnTouchListener{
 
     private PictureSurfaceView mGLSurfaceView;
     private SensorManager sensorManager;
@@ -32,6 +33,9 @@ public class PictureActivity extends FragmentActivity {
     private ImageButton handButton;
     private ImageButton bendButton;
     private Button undoButton;
+    private SeekBar seek;
+    private ScaleGestureDetector SGD;
+    private GestureDetector myG;//gestures
 
 
     @Override
@@ -47,7 +51,10 @@ public class PictureActivity extends FragmentActivity {
         handButton=(ImageButton)findViewById(R.id.handButton);
         bendButton=(ImageButton)findViewById(R.id.bendButton);
         undoButton=(Button)findViewById(R.id.undoButton);
-
+        seek=(SeekBar)findViewById(R.id.seekBar);
+        seek.setVisibility(View.GONE);
+        SGD = new ScaleGestureDetector(this,new ScaleListener());
+        myG = new GestureDetector(this,new Gesture());
         View.OnClickListener buttonsListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,6 +65,7 @@ public class PictureActivity extends FragmentActivity {
                         break;
                     case R.id.bendButton:
                         mGLSurfaceView.setDrawMode();
+
                         break;
                     case R.id.undoButton:
                         mGLSurfaceView.buttonPushedBack();
@@ -73,6 +81,27 @@ public class PictureActivity extends FragmentActivity {
         handButton.setOnClickListener(buttonsListener);
         bendButton.setOnClickListener(buttonsListener);
         undoButton.setOnClickListener(buttonsListener);
+        bendButton.setOnTouchListener(this);
+        final int seekSz=100;
+        seek.setProgress(seekSz/2+seekSz*(int)PreferenceHelper.getShift());
+
+        seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                PreferenceHelper.saveShift((float)(seekBar.getProgress()-seekSz/2)/(float)seekSz);
+                seek.setVisibility(View.GONE);
+            }
+        });
 
 
 
@@ -100,10 +129,12 @@ public class PictureActivity extends FragmentActivity {
 
 
     @Override
-    public boolean onTouchEvent(MotionEvent event){
+    public boolean onTouchEvent(MotionEvent e){
         //mGLSurfaceView.requestRender();
         // Be sure to call the superclass implementation
-        return super.onTouchEvent(event);
+        //SGD.onTouchEvent(e);
+        //myG.onTouchEvent(e);
+        return super.onTouchEvent(e);
     }
 
 
@@ -114,25 +145,30 @@ public class PictureActivity extends FragmentActivity {
         dialog.show(fm, "fragment_edit_name");
     }
 
+    @Override
+    public boolean onTouch(View v, MotionEvent e) {
+        SGD.onTouchEvent(e);
+        myG.onTouchEvent(e);
+        return true;
+    }
 
 
     class Gesture extends GestureDetector.SimpleOnGestureListener{
         public boolean onSingleTapUp(MotionEvent ev) {
+            mGLSurfaceView.setDrawMode();
             return true;
         }
+
         public void onLongPress(MotionEvent ev) {
+            seek.setVisibility(View.VISIBLE);
 
         }
-        private float dist=0;
+
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
                                 float distanceY) {
-            if(e1.getPointerCount()>1||e2.getPointerCount()>1){
-                return false;
-            }
-            dist+=distanceX;
-            Log.d("scale", "on scroll" + String.valueOf(dist));
             return true;
         }
+
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                                float velocityY) {
             return true;

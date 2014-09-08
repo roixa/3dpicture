@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,9 +46,11 @@ public class MenuDialog extends DialogFragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.loadPhotoButton:
-                Intent intent=new Intent(getActivity(),LoadPictureActivity.class);
+                FragmentActivity a=getActivity();
+                Intent intent=new Intent(a,LoadPictureActivity.class);
 
                 startActivity(intent);
+                a.finish();
 
         }
 

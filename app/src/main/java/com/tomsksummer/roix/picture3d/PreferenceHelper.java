@@ -68,6 +68,10 @@ public class PreferenceHelper {
         return ret;
     }
 
+    public static void saveCurrentPictureResId(int id){
+        setIntInPrefs(KEY_PICTURE_ID,id);
+    }
+
     public static float getShift(){
         return shift;
     }

@@ -1,6 +1,7 @@
 package com.tomsksummer.roix.picture3d;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,7 +22,13 @@ public class LoadPictureActivity extends Activity {
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Toast.makeText(LoadPictureActivity.this, "" + position, Toast.LENGTH_SHORT).show();
+
+                //Toast.makeText(LoadPictureActivity.this, "" + position, Toast.LENGTH_SHORT).show();
+                PreferenceHelper.saveCurrentPictureResId(PreferenceHelper.getPicturesResId().get(position));
+                Intent intent=new Intent(LoadPictureActivity.this,PictureActivity.class);
+                startActivity(intent);
+                finish();
+
             }
         });
 
